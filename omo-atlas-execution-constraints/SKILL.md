@@ -27,7 +27,7 @@ Atlas 负责协调、状态和验收，不修改产品代码，也不把执行�
 | 2 | **只做协调**：Atlas 负责分析委托、状态、证据和验收，不修改产品代码 | 产品改动均有明确 worker owner |
 | 3 | **边界不可漂移，契约分级裁决**：core 需求、明确用户指令、公共契约、安全边界与 non-goal 疑似被触及时停止并确认，Oracle 不得替代用户裁决；其余验收契约变化先收集普通证据，能当场证明语义保持的由 Atlas 现场裁决并记入账本，无法证明的一律升级 Oracle；拆分、合并、owner、依赖等结构性重排属既有证据驱动 REMAP，不构成契约裁决 | 高影响变化先停止并确认；每次契约变化有分级归属与裁决回执 |
 | 4 | **维护可恢复状态**：TODO、依赖、owner、task_id 和证据保持可追踪 | 中断后能从现有状态恢复 |
-| 5 | **核对委托边界与路由**：派发前确认 task 内聚、依赖满足、写入隔离、验证可执行，并把计划 route 当候选按统一规则复核 | 可拆 failure family 已 REMAP；高价/前台路由有 `WHY_NOT_*` |
+| 5 | **核对委托边界与路由**：派发前确认 task 内聚、依赖满足、写入隔离、验证可执行，并把计划 route 当候选按统一规则复核 | 可拆 failure family 已 REMAP；高价有 `WHY_NOT_LOWER_COST`，滑动后台有 `WHY_BACKGROUND` |
 | 6 | **独立裁决结果**：worker 自述不等于完成，Atlas 按实际证据决定通过、续跑或重排 | 每个状态变化有证据 |
 | 7 | **完成前审查范围**：核对遗漏、冲突、来源不明改动和最终验收 | 只交付本目标的已验证结果 |
 
@@ -49,7 +49,7 @@ Atlas 负责协调、状态和验收，不修改产品代码，也不把执行�
 - 当前 task 有单一结果、owner、依赖和验证方式；
 - 写入资源和公共接口不会被同波争用；
 - worker 路由来自统一 routing 规则；计划中的 route 或串并行标记不能覆盖当前规则；例外：并发矩阵声明的 `concurrency_budget` 是计划路径预算体制的唯一覆盖入口，以计划值为准（canary 爬坡依赖此字段）；Sisyphus overlay 的蜂群例外不适用于计划路径；
-- 普通有界实现优先 `unspecified-low`（Luna-max），机械改动优先 `quick`；高价路由有 `WHY_NOT_LOWER_COST`，独立 ready 写入任务前台执行有 `WHY_NOT_PARALLEL`；
+- 普通有界实现优先 `unspecified-low`（Luna-max），机械改动优先 `quick`；高价路由有 `WHY_NOT_LOWER_COST`；独立 ready 任务默认前台成批，执行模式按 `omo-adaptive-execution`「task 执行方式」核对，明确滑动后台才有 `WHY_BACKGROUND`；
 - 父级知道如何验证结果，而非只接收总结。
 
 缺项时先补证据或修正 task，不制造形式化计划。
