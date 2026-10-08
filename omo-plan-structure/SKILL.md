@@ -107,7 +107,7 @@ description: 当当前代理承担 Prometheus（编写或修订计划）或 Momu
 每个实施 task 写以下字段（标题/路由/写域等固定字段合计 ≤5 行，条件字段另计；胶囊与验收条目密度不设上限——decision-complete 是北极星）：
 
 - **标题行**：`- [ ] N. <标题>`——标题即一行内聚意图（交付什么可观察结果、服务哪个下游），用户可读语言；集成 task 用 `[integration]` 标题前缀，普通实现无前缀；测试组织由上游 QA per todo 契约承接，不设测试专用前缀。
-- **路由行**：`Recommended task executor category: <route>`（字面前缀保留，取值限上游 category 词表，不与 execution_mode 合并），使用专用子代理时改写 `subagent_type=<name>`（二者选一）；execution_mode 以同行括注（如 `(background)`），无法预定时写 `executor_judgment` 及原因。
+- **路由行**：`Recommended task executor category: <route>`（字面前缀保留，取值限上游 category 词表，不与 execution_mode 合并），使用专用子代理时改写 `subagent_type=<name>`（二者选一）；execution_mode 默认同行括注 `(foreground)`，并行 task 仍可前台同批派发；仅明确滑动策略时标 `(background)` 并附 `WHY_BACKGROUND`，无法预定时写 `executor_judgment` 及原因，具体选模式按 `omo-adaptive-execution`「task 执行方式」。
 - **上下文胶囊**：相关文件清单、关键符号与行区间、规划期已验证结论、无需重复探索的范围，并记录生成时的代码 revision 锚（commit hash 或文件摘要），供 Atlas 注入前校验时效；落点已知且为单点修改的 task 豁免行区间与结论摘录，胶囊只写目标路径与符号名。
 - **验收条目**（acceptance_contract，初始基线 `contract_revision: 0`）：逐条一行，机械语法 `- <ID>：<二元条件> → 命令=<命令> 预期=<结果>`，`ID` 惯例 `T<n>-A<m>`（task 序号-条目序号）；高风险 task 在同条目行尾追加 `scope=<作用域文件清单>`（Tier 1 scope 扩展裁决的参照落点）。条目 `ID` 从不复用、既有条目不原地改写，语义替换以新条目 `supersedes` 旧条目表达；执行期修订一律 append-only，经执行侧分级裁决后以账本 `plan_revision` 事件生效。
 - **写域**：完整计划 = 矩阵清单引用 + 增量禁止项一行；轻量计划 = 唯一可写产物完整清单；读取范围由上下文胶囊承载。
